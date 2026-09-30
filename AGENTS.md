@@ -23,7 +23,7 @@ Repo-wide conventions for this monorepo. Package-specific rules live in:
 - Never commit to `main`, never merge PRs, never force-push, never rewrite shared history.
 - Conventional Commits (`feat:`, `fix:`, `chore:`, `docs:`).
 - One slice per branch; open the PR with `gh`; the owner reviews and merges before the next slice starts.
-- PR descriptions: one-line summary, files touched, how to verify, screenshots for UI changes, "part N of M" where applicable.
+- PR descriptions: one-line summary, plus screenshots for UI changes. Do not include "Files touched" or "How to verify" sections.
 
 ## Commit attribution (strict)
 

@@ -9,7 +9,7 @@ Scope: frontend only. Repo-wide conventions live in the root `AGENTS.md`; backen
 - React 19.x + TypeScript strict, bundled by Vite 8. Runtime: Node.js 24 LTS. If `package.json` pins older majors, `package.json` wins — note the reason in `docs/decisions.md`.
 - Package manager: **pnpm 12** (same as the backend; never `npm`/`yarn`).
 - Tests: Vitest 5 + Testing Library. Lint/format: ESLint + Prettier.
-- Data access: only through the typed API client in `src/api/`, pointed at `VITE_API_BASE_URL` (the backend). Never call the GitHub API from the browser.
+- Data access: only through the typed API client in `src/api/`, pointed at `VITE_API_URL` (the backend). Never call the GitHub API from the browser.
 
 ## Project Structure
 
@@ -29,7 +29,7 @@ pnpm install
 cp .env.example .env   # Vite exposes only VITE_* vars; never commit .env
 ```
 
-Set the backend URL, for example `VITE_API_BASE_URL=http://localhost:3000/api`. Start the backend too (see `AGENTS.backend.md`).
+Set the backend URL, for example `VITE_API_URL=http://localhost:8080` (origin only; the API hook appends `/api/...`). Start the backend too (see `AGENTS.backend.md`).
 
 ## Commands
 
@@ -99,7 +99,7 @@ export function ReposList() {
 1. Branch from `main`: `git switch -c feat/<short-name>`.
 2. Conventional Commits (`feat:`, `fix:`, `chore:`).
 3. Before pushing: `pnpm lint && pnpm typecheck && pnpm test`.
-4. PR description: one-line summary + the test command you ran + screenshots for UI changes.
+4. PR description: one-line summary, plus screenshots for UI changes. Do not include "Files touched" or "How to verify" sections.
 5. Never commit to `main` directly, never merge a PR, never force-push, never rewrite shared history.
 
 ### Commit attribution (strict)
@@ -113,7 +113,7 @@ export function ReposList() {
 ## Boundaries
 
 - Always: edit code under `src/**` and call backends through the typed API client in `src/api/`.
-- Always: keep `VITE_API_BASE_URL` the only switch needed to point at the backend, and document new env vars in `.env.example`.
+- Always: keep `VITE_API_URL` the only switch needed to point at the backend, and document new env vars in `.env.example`.
 - Always: keep response types in sync with the frozen backend contract (`openapi.yaml`); change both sides in the same PR or link the backend PR.
 - Always: keep secrets server-side and fix lint failures at the source.
 - Always: run `pnpm lint && pnpm typecheck && pnpm test` before pushing.

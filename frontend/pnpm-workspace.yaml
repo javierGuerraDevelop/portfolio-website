@@ -1,0 +1,4 @@
+# Project settings for pnpm 12 (the package.json "pnpm" field is no longer read).
+# The esbuild install script is reviewed and approved: vite depends on it.
+allowBuilds:
+    esbuild: true

@@ -72,3 +72,10 @@ Dates refer to 2026.
 - **Context:** Parking registration calls a live third-party service and creates a real parking pass. The owner tests it manually.
 - **Alternatives:** AWS Lambda handler; tests with a mocked upstream; hardcoding values in source (rejected: public repo + PII).
 - **Outcome:** Endpoints live in `backend/src/routes/parking.ts` + `backend/src/services/parking.ts`; a deliberate, documented exception to the TDD rule in `backend/AGENTS.md`.
+
+## D-011 — Commit and PR style: plain Conventional Commits, summary-only PRs (2026-09-30)
+
+- **Decision:** Commit messages and merge messages use plain Conventional Commits with no references to plans, phases, milestones, slices, or "parts". PR descriptions are a one-line summary, plus screenshots when the change affects UI — no "Files touched" or "How to verify" sections. Committed docs still track phases as usual.
+- **Context:** PR #1 initially included "Files touched" and "How to verify" sections; the owner removed them manually and set this style for all future work.
+- **Alternatives:** Keep the previous PR template (rejected by owner); allow phase/slice references in commit and PR text (rejected).
+- **Outcome:** Applies to every commit, merge, and PR from now on; the `AGENTS.md` files were updated to match. No AI/model attribution anywhere.

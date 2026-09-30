@@ -105,7 +105,7 @@ export async function reposRoutes(app: FastifyInstance) {
 1. Branch from `main`: `git switch -c feat/<short-name>`.
 2. Keep commits small; use Conventional Commits (`feat:`, `fix:`, `chore:`).
 3. Before pushing, run `pnpm lint && pnpm typecheck && pnpm test`.
-4. Open a PR with a one-line summary, the test command you ran, and the phase from `docs/plan.md` it belongs to.
+4. Open a PR with a one-line summary, plus screenshots for UI changes. Do not include "Files touched" or "How to verify" sections.
 5. Never commit to `main` directly, never merge a PR, never force-push, never rewrite shared history.
 
 ### Commit attribution (strict)

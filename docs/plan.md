@@ -22,8 +22,8 @@ Last updated: 2026-09-30.
 
 Slices (one branch/PR at a time; owner merges before the next starts):
 
-1. ▶ `chore/repo-hygiene` — `.gitignore` (root + packages), root `AGENTS.md`, seed `docs/`, commit existing AGENTS/compose/prettier files. No app code.
-2. ☐ `chore/frontend-tooling` — pnpm migration, ESLint, Vitest + Testing Library, scripts (`test`, `test:watch`, `typecheck`, `format`), `.env.example`. `src/` untouched.
+1. ✅ `chore/repo-hygiene` — `.gitignore` (root + packages), root `AGENTS.md`, seed `docs/`, commit existing AGENTS/compose/prettier files. No app code. Merged (PR #1).
+2. ▶ `chore/frontend-tooling` — pnpm migration, ESLint, Vitest + Testing Library, scripts (`test`, `test:watch`, `typecheck`, `format`), `.env.example`. `src/` untouched.
 3. ☐ `feat/app-shell-home` — Vite shell, layout, UI kit, hooks/types, Home page + smoke test.
 4. ☐ `feat/about-contact` — About + Contact pages, Contact form tests.
 5. ☐ `feat/repos-parking` — Repos + RepoCard + hidden ParkingPage; Repos state tests. Parking page lands unchanged; no parking API invocation anywhere.

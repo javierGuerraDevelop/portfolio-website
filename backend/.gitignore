@@ -1,0 +1,56 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build output
+dist/
+dist-ssr/
+build/
+*.tsbuildinfo
+
+# Vite
+.vite/
+vite.config.*.timestamp-*
+
+# Test coverage / reports
+coverage/
+.nyc_output/
+junit.xml
+
+# Environment — never commit real values
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-error.log*
+
+# Caches
+.eslintcache
+.prettiercache
+.cache/
+node_modules/.cache/
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+*.swo
+*~
+
+# Certificates
+*.pem
+
+# Internal planning (never commit)
+implementation_instructions.md
+
+# Private parking reference — contains real guest data (never commit)
+backend/parking_endpoint_go/

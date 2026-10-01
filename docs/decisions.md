@@ -79,3 +79,10 @@ Dates refer to 2026.
 - **Context:** PR #1 initially included "Files touched" and "How to verify" sections; the owner removed them manually and set this style for all future work.
 - **Alternatives:** Keep the previous PR template (rejected by owner); allow phase/slice references in commit and PR text (rejected).
 - **Outcome:** Applies to every commit, merge, and PR from now on; the `AGENTS.md` files were updated to match. No AI/model attribution anywhere.
+
+## D-012 — Frontend cleanup scope: formatting/a11y/cleanup approved, UX proposals deferred (2026-09-30)
+
+- **Decision:** The final frontend cleanup covers Prettier formatting, heading-structure a11y fixes, removal of unused code/asset/dependency, a responsive audit, and committing `nginx.conf`. Two behavior-changing proposals — a stale-cache notice on Repos and an error notice on Home — are deferred. The unused `VITE_GITHUB_USERNAME` config stays as-is.
+- **Context:** Every item was listed with evidence and approved selectively by the owner before implementation.
+- **Alternatives:** Implement the stale-cache and Home-error notices now (deferred: the backend that would produce the stale `message` does not exist yet); remove the dead `VITE_GITHUB_USERNAME` (skipped: it would also touch both compose files, i.e. deploy config).
+- **Outcome:** The UX proposals return in Phase 4 once the backend serves the envelope `message`; Home keeps its fallback-content behavior until then.

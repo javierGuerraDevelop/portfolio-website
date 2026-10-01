@@ -26,8 +26,8 @@ Slices (one branch/PR at a time; owner merges before the next starts):
 2. ✅ `chore/frontend-tooling` — pnpm migration, ESLint, Vitest + Testing Library, scripts (`test`, `test:watch`, `typecheck`, `format`), `.env.example`. `src/` untouched. Merged (PR #2).
 3. ✅ `feat/app-shell-home` — Vite shell, layout, UI kit, hooks/types, Home page + smoke test. Merged (PR #3).
 4. ✅ `feat/about-contact` — About + Contact pages, Contact form tests. Merged (PR #4).
-5. ▶ `feat/repos-parking` — Repos + RepoCard + hidden ParkingPage; Repos state tests. Parking page lands unchanged; no parking API invocation anywhere.
-6. ☐ `chore/polish` *(optional)* — a11y/responsive pass, cleanup, stale-notice and Home-error proposals (each itemized for approval first).
+5. ✅ `feat/repos-parking` — Repos + RepoCard + hidden ParkingPage; Repos state tests. Parking page lands unchanged; no parking API invocation anywhere. Merged (PR #5).
+6. ▶ `chore/polish` *(optional)* — a11y/responsive pass, cleanup, stale-notice and Home-error proposals (each itemized for approval first).
 
 Definition of done: frontend fully tracked via merged PRs; `pnpm lint && pnpm typecheck && pnpm test && pnpm build` green in `frontend/`; `implementation_instructions.md` and `backend/parking_endpoint_go/` never staged; no attribution in any commit or PR.
 

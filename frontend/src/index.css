@@ -51,7 +51,7 @@
     }
 
     .gradient-border::before {
-        content: "";
+        content: '';
         position: absolute;
         inset: 0;
         border-radius: inherit;

@@ -31,15 +31,15 @@ Slices (one branch/PR at a time; owner merges before the next starts):
 
 Definition of done: frontend fully tracked via merged PRs; `pnpm lint && pnpm typecheck && pnpm test && pnpm build` green in `frontend/`; `implementation_instructions.md` and `backend/parking_endpoint_go/` never staged; no attribution in any commit or PR. ✅ Met.
 
-## Phase 2 — Freeze the API contract ▶
+## Phase 2 — Freeze the API contract ✅
 
 - `openapi.yaml` in the backend package; zod schemas + shared TypeScript types as the single source of truth.
 - One success envelope and one error envelope; statuses 400 (validation), 404 (not found), 429 (rate limit), 502 (GitHub upstream failure).
 - `docs/frontend-analysis.md`, `docs/api.md` skeleton.
 
-Definition of done: owner signs off; contract frozen; later changes update contract docs first and require sign-off.
+Definition of done: owner signs off; contract frozen; later changes update contract docs first and require sign-off. ✅ Met.
 
-## Phase 3 — Backend implementation ☐
+## Phase 3 — Backend implementation ▶
 
 - Fastify 5 scaffold with scripts exactly per `backend/AGENTS.md`; `src/lib/env.ts` + `.env.example` (fail fast, no real values committed).
 - `GET /api/health`; GitHub service (pinned repos via GraphQL, in-memory TTL cache, serve stale on failure, rate-limit handling, fixtures for tokenless dev/tests); `GET /api/repos`; `GET /api/profile` (static typed content module); `POST /api/contact` (zod, honeypot, rate limiting, Resend).

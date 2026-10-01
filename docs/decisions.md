@@ -107,3 +107,24 @@ Dates refer to 2026.
 - **Context:** The frontend form only enforces `required` fields and an email input type; the backend needs explicit bounds for validation, spam resistance, and storage-free delivery (D-005).
 - **Alternatives:** Mirror only the browser constraints; stricter caps (for example 1000 chars); CAPTCHA (rejected: third-party friction and privacy cost).
 - **Outcome:** Bounds frozen in `openapi.yaml` and `contactRequestSchema`; the frontend may mirror them later, which would be a contract-compatible change.
+
+## D-016 — Backend toolchain: TypeScript 6.0.3, ESLint 10 flat config, zod 4 (2026-09-30)
+
+- **Decision:** The backend uses TypeScript 6.0.3 (strict, NodeNext, ESM with `.js` specifiers), ESLint 10 with a flat config plus `typescript-eslint` 8.71, and zod 4 as already frozen in Phase 2. Fastify stays on 5.x.
+- **Context:** `backend/AGENTS.md` mandates TypeScript 7.x but allows 6.x "if a dependency lags behind"; `typescript-eslint` 8.71 peers support `typescript >=4.8.4 <6.1.0`, so TS 7 cannot be linted. Stable 6.0.3 exists. The mandated lint script `eslint . --max-warnings=0` only lints `.ts` files under a flat config, which requires ESLint 9+.
+- **Alternatives:** TypeScript 7 with a broken/unsupported lint setup; TypeScript 5.x (violates "never below 6"); ESLint 8 with the same script, which would silently lint nothing; skip `typescript-eslint` (rejected: no type-aware rules).
+- **Outcome:** Revisit TypeScript 7 once `typescript-eslint` supports it; the upgrade is otherwise independent of application code.
+
+## D-017 — GitHub cache and rate-limit behavior (2026-09-30)
+
+- **Decision:** Pinned repositories are cached in memory for 10 minutes (`GITHUB_CACHE_TTL_MS`), served stale with the message `Serving cached results; GitHub is currently unavailable` when a refresh fails, and the service blocks upstream calls until `x-ratelimit-reset` after a rate-limit error before returning a typed 429.
+- **Context:** D-004 requires TTL + serve-stale because GraphQL has no ETag; recruiters should never see a blank Repos page while a cached copy exists.
+- **Alternatives:** No TTL (always hit GitHub); longer/shorter TTLs; retry immediately after a rate-limit error (rejected: burns the remaining budget); no blocking window (rejected: hammering upstream).
+- **Outcome:** Covered by unit tests for fresh cache, stale fallback, blocking, 429, and 502; the frontend consumes the stale `message` once its notice ships (D-012).
+
+## D-018 — Contact rate limiting and delivery states (2026-09-30)
+
+- **Decision:** `POST /api/contact` is limited to 5 requests per minute per client, the Resend configuration is all-or-nothing at boot, an unconfigured deployment returns a 500 error envelope for contact requests, and provider failures return 500 `Failed to send the message`. The honeypot returns a silent success.
+- **Context:** D-005/D-015 define delivery and validation; the endpoint must resist spam without a captcha and must not break boot for deployments that only serve the public pages.
+- **Alternatives:** Global rate limiting (rejected: the other endpoints are cache-backed); requiring Resend keys at boot (rejected: tokenless/local setups could not start); 502 for provider failures (kept 502 reserved for GitHub, D-013).
+- **Outcome:** The limit and states are implemented and covered by integration tests.

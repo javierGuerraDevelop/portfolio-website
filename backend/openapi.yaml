@@ -1,0 +1,387 @@
+openapi: 3.1.0
+info:
+    title: Portfolio API
+    version: 0.1.0
+    description: |
+        Frozen contract for the portfolio site frontend (Home, About, Repos, Contact).
+        The frontend is the source of truth for shapes: this document mirrors
+        `frontend/src/types/index.ts` and `frontend/src/hooks/useApi.ts`.
+
+        All successful responses use the success envelope, all failures use the error
+        envelope. Internal parking endpoints are deliberately excluded from this document;
+        they are documented in `docs/api.md` under "Internal".
+    contact:
+        name: Portfolio API maintainer
+servers:
+    - url: https://guerrajavierswe.com
+      description: Production (nginx serves the SPA and proxies /api/ to the backend)
+security: []
+tags:
+    - name: health
+      description: Ops probe, unused by the UI
+    - name: profile
+      description: Static profile content
+    - name: repos
+      description: Pinned GitHub repositories
+    - name: contact
+      description: Contact form delivery
+paths:
+    /api/health:
+        get:
+            tags: [health]
+            summary: Service health probe
+            description: Unused by the UI; for ops checks only.
+            operationId: getHealth
+            responses:
+                '200':
+                    description: Service is up
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/HealthResponse'
+                '500':
+                    $ref: '#/components/responses/InternalError'
+    /api/profile:
+        get:
+            tags: [profile]
+            summary: Static profile content
+            description: |
+                Serves the typed static profile content module (D-006); no database.
+                The frontend consumes every field.
+            operationId: getProfile
+            responses:
+                '200':
+                    description: Profile content
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ProfileResponse'
+                '500':
+                    $ref: '#/components/responses/InternalError'
+    /api/repos:
+        get:
+            tags: [repos]
+            summary: Pinned repositories in pinned order
+            description: |
+                Returns the pinned repositories of the configured GitHub account, in pinned
+                order, fetched server-side with GitHub GraphQL. The UI sends no query
+                parameters and filters client-side.
+
+                When GitHub is unavailable or rate-limited, the API may serve a stale cached
+                copy with HTTP 200 and a `message` describing the degraded state (serve stale,
+                D-004). If no cached copy exists, the API returns `502`.
+            operationId: getRepos
+            responses:
+                '200':
+                    description: Pinned repositories, possibly served from a stale cache
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ReposResponse'
+                '429':
+                    $ref: '#/components/responses/RateLimited'
+                '502':
+                    $ref: '#/components/responses/UpstreamFailure'
+                '500':
+                    $ref: '#/components/responses/InternalError'
+    /api/contact:
+        post:
+            tags: [contact]
+            summary: Send a contact message
+            description: |
+                Validates the body, then delivers the message by email (Resend, D-005).
+                The UI expects `data: null` on success and displays `error` from the error
+                envelope on failure. Optional honeypot field `website` must be empty; when
+                filled, the API returns a silent success without sending anything.
+            operationId: postContact
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/ContactRequest'
+            responses:
+                '200':
+                    description: Message accepted (also returned for a filled honeypot)
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ContactResponse'
+                '400':
+                    $ref: '#/components/responses/ValidationError'
+                '429':
+                    $ref: '#/components/responses/RateLimited'
+                '500':
+                    $ref: '#/components/responses/InternalError'
+components:
+    responses:
+        ValidationError:
+            description: Request body failed validation
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/ErrorEnvelope'
+        RateLimited:
+            description: Rate limit exceeded (GitHub upstream rate limit or contact spam protection)
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/ErrorEnvelope'
+        UpstreamFailure:
+            description: GitHub upstream failed and no cached data is available
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/ErrorEnvelope'
+        InternalError:
+            description: Unexpected server error
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/ErrorEnvelope'
+    schemas:
+        ErrorEnvelope:
+            type: object
+            description: Error envelope used for every failure response.
+            required: [success, error]
+            properties:
+                success:
+                    const: false
+                message:
+                    type: string
+                    description: Optional human-readable context
+                error:
+                    type: string
+                    description: Error text safe to display to the user
+        HealthResponse:
+            type: object
+            required: [success, data]
+            properties:
+                success:
+                    const: true
+                message:
+                    type: string
+                data:
+                    type: object
+                    required: [status]
+                    properties:
+                        status:
+                            const: ok
+        ProfileResponse:
+            type: object
+            required: [success, data]
+            properties:
+                success:
+                    const: true
+                message:
+                    type: string
+                    description: Optional notice (for example degraded data)
+                data:
+                    $ref: '#/components/schemas/Profile'
+        ReposResponse:
+            type: object
+            required: [success, data]
+            properties:
+                success:
+                    const: true
+                message:
+                    type: string
+                    description: Present when the list is served from a stale cache
+                data:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Repository'
+        ContactResponse:
+            type: object
+            required: [success, data]
+            properties:
+                success:
+                    const: true
+                message:
+                    type: string
+                data:
+                    type: 'null'
+        Skill:
+            type: object
+            required: [category, items]
+            properties:
+                category:
+                    type: string
+                items:
+                    type: array
+                    items:
+                        type: string
+        SocialLink:
+            type: object
+            required: [name, url, icon]
+            properties:
+                name:
+                    type: string
+                url:
+                    type: string
+                icon:
+                    type: string
+                    description: Icon key rendered by the frontend (for example `github`, `linkedin`)
+        Job:
+            type: object
+            required: [company, position, startDate, endDate, description, highlights]
+            properties:
+                company:
+                    type: string
+                position:
+                    type: string
+                startDate:
+                    type: string
+                endDate:
+                    type: string
+                description:
+                    type: string
+                highlights:
+                    type: array
+                    items:
+                        type: string
+        School:
+            type: object
+            required: [institution, degree, field, startYear, endYear]
+            properties:
+                institution:
+                    type: string
+                degree:
+                    type: string
+                field:
+                    type: string
+                startYear:
+                    type: string
+                endYear:
+                    type: string
+        Profile:
+            type: object
+            required:
+                [
+                    name,
+                    title,
+                    email,
+                    location,
+                    bio,
+                    shortBio,
+                    skills,
+                    socialLinks,
+                    experience,
+                    education,
+                ]
+            properties:
+                name:
+                    type: string
+                title:
+                    type: string
+                email:
+                    type: string
+                location:
+                    type: string
+                bio:
+                    type: string
+                shortBio:
+                    type: string
+                skills:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Skill'
+                socialLinks:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/SocialLink'
+                experience:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Job'
+                education:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/School'
+        Repository:
+            type: object
+            description: Exactly the 19 fields the frontend declares in `frontend/src/types/index.ts`.
+            required:
+                [
+                    id,
+                    name,
+                    full_name,
+                    description,
+                    html_url,
+                    clone_url,
+                    language,
+                    stargazers_count,
+                    forks_count,
+                    watchers_count,
+                    open_issues_count,
+                    topics,
+                    created_at,
+                    updated_at,
+                    pushed_at,
+                    fork,
+                    archived,
+                    homepage,
+                ]
+            properties:
+                id:
+                    type: integer
+                name:
+                    type: string
+                full_name:
+                    type: string
+                description:
+                    type: [string, 'null']
+                html_url:
+                    type: string
+                clone_url:
+                    type: string
+                language:
+                    type: [string, 'null']
+                stargazers_count:
+                    type: integer
+                forks_count:
+                    type: integer
+                watchers_count:
+                    type: integer
+                open_issues_count:
+                    type: integer
+                topics:
+                    type: array
+                    items:
+                        type: string
+                created_at:
+                    type: string
+                updated_at:
+                    type: string
+                pushed_at:
+                    type: string
+                fork:
+                    type: boolean
+                archived:
+                    type: boolean
+                homepage:
+                    type: [string, 'null']
+        ContactRequest:
+            type: object
+            required: [name, email, subject, message]
+            properties:
+                name:
+                    type: string
+                    minLength: 1
+                    maxLength: 100
+                email:
+                    type: string
+                    format: email
+                    maxLength: 254
+                subject:
+                    type: string
+                    maxLength: 150
+                    description: May be empty; the form does not require it
+                message:
+                    type: string
+                    minLength: 1
+                    maxLength: 5000
+                website:
+                    type: string
+                    maxLength: 200
+                    description: Honeypot; must stay empty (silent success when filled)

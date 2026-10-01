@@ -18,7 +18,7 @@ Last updated: 2026-09-30.
 - `GET /api/health` → ops probe (unused by the UI).
 - Parking (Phase 6, raw responses, not the envelope): `GET /api/parking/guests` → `{ guests: string[] }`; `POST /api/parking/register/:name` → `{ hoa_status: number, hoa_body: string }`.
 
-## Phase 1 — Repo hygiene and landing the frontend as PRs ▶
+## Phase 1 — Repo hygiene and landing the frontend as PRs ✅
 
 Slices (one branch/PR at a time; owner merges before the next starts):
 
@@ -27,11 +27,11 @@ Slices (one branch/PR at a time; owner merges before the next starts):
 3. ✅ `feat/app-shell-home` — Vite shell, layout, UI kit, hooks/types, Home page + smoke test. Merged (PR #3).
 4. ✅ `feat/about-contact` — About + Contact pages, Contact form tests. Merged (PR #4).
 5. ✅ `feat/repos-parking` — Repos + RepoCard + hidden ParkingPage; Repos state tests. Parking page lands unchanged; no parking API invocation anywhere. Merged (PR #5).
-6. ▶ `chore/polish` *(optional)* — a11y/responsive pass, cleanup, stale-notice and Home-error proposals (each itemized for approval first).
+6. ✅ `chore/polish` *(approved subset)* — Prettier sweep, heading a11y fixes, unused code/asset/dependency removal, responsive audit, `nginx.conf`. Merged (PR #6). Deferred: stale-cache notice, Home error notice, `VITE_GITHUB_USERNAME` cleanup (D-012).
 
-Definition of done: frontend fully tracked via merged PRs; `pnpm lint && pnpm typecheck && pnpm test && pnpm build` green in `frontend/`; `implementation_instructions.md` and `backend/parking_endpoint_go/` never staged; no attribution in any commit or PR.
+Definition of done: frontend fully tracked via merged PRs; `pnpm lint && pnpm typecheck && pnpm test && pnpm build` green in `frontend/`; `implementation_instructions.md` and `backend/parking_endpoint_go/` never staged; no attribution in any commit or PR. ✅ Met.
 
-## Phase 2 — Freeze the API contract ☐
+## Phase 2 — Freeze the API contract ▶
 
 - `openapi.yaml` in the backend package; zod schemas + shared TypeScript types as the single source of truth.
 - One success envelope and one error envelope; statuses 400 (validation), 404 (not found), 429 (rate limit), 502 (GitHub upstream failure).

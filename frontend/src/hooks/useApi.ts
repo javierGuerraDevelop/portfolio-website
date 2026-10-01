@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from "react";
-import { APIResponse } from "@/types";
+import { useState, useEffect, useCallback } from 'react';
+import { APIResponse } from '@/types';
 
-const API_URL = import.meta.env.VITE_API_URL ?? "";
+const API_URL = import.meta.env.VITE_API_URL ?? '';
 
 interface UseApiState<T> {
     data: T | null;
@@ -26,7 +26,7 @@ export function useApi<T>(endpoint: string, options: UseApiOptions = { immediate
         try {
             const response = await fetch(`${API_URL}${endpoint}`, {
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                 },
             });
 
@@ -37,7 +37,7 @@ export function useApi<T>(endpoint: string, options: UseApiOptions = { immediate
             const result: APIResponse<T> = await response.json();
 
             if (!result.success) {
-                throw new Error(result.error || "An error occurred");
+                throw new Error(result.error || 'An error occurred');
             }
 
             setState({
@@ -46,7 +46,7 @@ export function useApi<T>(endpoint: string, options: UseApiOptions = { immediate
                 error: null,
             });
         } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : "An error occurred";
+            const errorMessage = err instanceof Error ? err.message : 'An error occurred';
             setState({
                 data: null,
                 loading: false,
@@ -69,9 +69,9 @@ export function useApi<T>(endpoint: string, options: UseApiOptions = { immediate
 
 export async function postApi<T, B>(endpoint: string, body: B): Promise<APIResponse<T>> {
     const response = await fetch(`${API_URL}${endpoint}`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
         },
         body: JSON.stringify(body),
     });

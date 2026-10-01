@@ -27,7 +27,10 @@ services:
       - PORT=8080
       - GITHUB_USERNAME=${GITHUB_USERNAME}
       - GITHUB_TOKEN=${GITHUB_TOKEN:-}
-      - ALLOWED_ORIGINS=https://guerrajavierswe.com,https://www.guerrajavierswe.com
+      - FRONTEND_ORIGIN=https://guerrajavierswe.com,https://www.guerrajavierswe.com
+      - RESEND_API_KEY=${RESEND_API_KEY:-}
+      - CONTACT_TO=${CONTACT_TO:-}
+      - CONTACT_FROM=${CONTACT_FROM:-}
     networks:
       - portfolio-network
     restart: unless-stopped

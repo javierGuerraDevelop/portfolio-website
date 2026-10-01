@@ -13,9 +13,9 @@ export function NotFoundPage() {
                             404
                         </span>
                         <div className='absolute inset-0 flex items-center justify-center'>
-                            <span className='text-4xl md:text-5xl font-display font-bold gradient-text'>
+                            <h1 className='text-4xl md:text-5xl font-display font-bold gradient-text'>
                                 Page Not Found
-                            </span>
+                            </h1>
                         </div>
                     </div>
 

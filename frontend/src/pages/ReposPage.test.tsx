@@ -71,6 +71,9 @@ describe('ReposPage', () => {
 
         renderRepos();
 
+        expect(
+            screen.getByRole('heading', { level: 1, name: 'GitHub Repositories' }),
+        ).toBeInTheDocument();
         expect(screen.getByRole('heading', { name: 'alpha' })).toBeInTheDocument();
         expect(screen.getByRole('heading', { name: 'beta' })).toBeInTheDocument();
         expect(screen.getByText('Showing 2 of 2 repositories')).toBeInTheDocument();

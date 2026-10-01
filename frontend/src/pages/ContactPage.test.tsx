@@ -36,6 +36,9 @@ describe('ContactPage', () => {
         postApiMock.mockResolvedValue({ success: true, data: null });
 
         renderContact();
+
+        expect(screen.getByRole('heading', { level: 1, name: 'Get in Touch' })).toBeInTheDocument();
+
         fillForm();
         fireEvent.click(screen.getByRole('button', { name: /send message/i }));
 

@@ -48,6 +48,7 @@ export function ReposPage() {
                 <SectionHeader
                     title='GitHub Repositories'
                     subtitle='Explore my open source projects and contributions'
+                    level={1}
                 />
                 <ErrorMessage message={error} onRetry={refetch} className='mt-12' />
             </div>
@@ -59,6 +60,7 @@ export function ReposPage() {
             <SectionHeader
                 title='GitHub Repositories'
                 subtitle='Explore my open source projects and contributions'
+                level={1}
             />
 
             {/* Filters */}

@@ -64,6 +64,7 @@ export function ContactPage() {
             <SectionHeader
                 title='Get in Touch'
                 subtitle="Have a question or want to work together? I'd love to hear from you."
+                level={1}
             />
 
             <div className='grid lg:grid-cols-2 gap-12 max-w-5xl mx-auto'>

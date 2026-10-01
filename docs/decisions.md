@@ -86,3 +86,24 @@ Dates refer to 2026.
 - **Context:** Every item was listed with evidence and approved selectively by the owner before implementation.
 - **Alternatives:** Implement the stale-cache and Home-error notices now (deferred: the backend that would produce the stale `message` does not exist yet); remove the dead `VITE_GITHUB_USERNAME` (skipped: it would also touch both compose files, i.e. deploy config).
 - **Outcome:** The UX proposals return in Phase 4 once the backend serves the envelope `message`; Home keeps its fallback-content behavior until then.
+
+## D-013 — API contract: hand-written OpenAPI + zod schemas (2026-09-30)
+
+- **Decision:** The frozen contract consists of `backend/openapi.yaml` (documentation) and zod schemas in `backend/src/schemas/` (runtime source of truth). Shared TypeScript types are inferred from the schemas with `z.infer`; the schemas target zod 4. No code generation.
+- **Context:** Four public endpoints with stable shapes; zod is required at request boundaries anyway (`backend/AGENTS.md`). Verified against TypeScript 7 (strict, NodeNext) and a runtime parse smoke in a scratch sandbox.
+- **Alternatives:** Generate the OpenAPI document from zod (`zod-to-openapi`); generate zod and client types from `openapi.yaml` (`openapi-typescript`, `openapi-fetch`); JSON Schema as the single source. Rejected: extra toolchain and build steps for a small, rarely changing surface.
+- **Outcome:** Contract changes update `openapi.yaml`, the schemas, `docs/api.md`, and frontend types together; Phase 3 adds tests that validate real responses against the schemas.
+
+## D-014 — Parking endpoints excluded from the public OpenAPI document (2026-09-30)
+
+- **Decision:** `backend/openapi.yaml` documents only the public endpoints; the parking endpoints live in `docs/api.md` under "Internal" and keep raw responses instead of the envelope (D-010).
+- **Context:** The parking page is a hidden route backed by a live third-party service; the repo is public, but the API surface is not meant for external integration.
+- **Alternatives:** Include them in `openapi.yaml` with an `x-internal` marker; keep a separate internal spec file. Rejected: the public contract should describe only the public surface.
+- **Outcome:** Phase 6 implements the endpoints; no automated tests; never invoked in dev/test/CI.
+
+## D-015 — Contact validation bounds and honeypot (2026-09-30)
+
+- **Decision:** Server-side validation: `name` 1–100 chars after trim, valid email ≤ 254 chars, `subject` ≤ 150 chars (may be empty), `message` 1–5000 chars after trim, plus an optional `website` honeypot (≤ 200 chars) that returns a silent success when filled; contact requests are rate-limited with `429`.
+- **Context:** The frontend form only enforces `required` fields and an email input type; the backend needs explicit bounds for validation, spam resistance, and storage-free delivery (D-005).
+- **Alternatives:** Mirror only the browser constraints; stricter caps (for example 1000 chars); CAPTCHA (rejected: third-party friction and privacy cost).
+- **Outcome:** Bounds frozen in `openapi.yaml` and `contactRequestSchema`; the frontend may mirror them later, which would be a contract-compatible change.

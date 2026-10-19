@@ -54,3 +54,6 @@ implementation_instructions.md
 
 # Private parking reference — contains real guest data (never commit)
 backend/parking_endpoint_go/
+
+# Private parking service (its own private repo — never commit)
+parking-service/
